@@ -9,15 +9,6 @@ import { Brain } from "lucide-react"
 import { ModeToggle } from "@/components/mode-toggle"
 import {nhost} from "@/lib/nhost"
 
-// interface AuthContextType{
-//   email : string | null
-//   isLoggedIn : boolean
-//   login : (email: string, accessToken: string,)=> void
-//   logout: ()=>void
-// }
-
-// const AuthContext = createContext<AuthContextType | undefined>(undefined)
-
 export default function Navbar() {
   const pathname = usePathname()
   const router = useRouter()
@@ -47,11 +38,11 @@ export default function Navbar() {
       }else{
         const user = await nhost.auth.getUser()
         if(user){
-          setEmail(user.email)
-          localStorage.setItem('user_email',user.email)
-          localStorage.setItem('access_token',user.accessToken)
+          setEmail(user.email ?? null)
+          localStorage.setItem('user_email',user.email ?? '')
+          // localStorage.setItem('access_token',user.access_token ?? '')
           const expirationTime = new Date().getTime() + 12*60*60*1000
-          localStorage.setItem('session_expiration',expirationTime.toString)
+          localStorage.setItem('session_expiration',expirationTime.toString() ?? '')
           setIsLoggedIn(true)
         }
       }
@@ -114,7 +105,7 @@ export default function Navbar() {
             <div className="relative">
               <button onClick={toggleDropdown} className="flex items-center space-x-2">
                 <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center ">
-                  <span className="text-white font-bold">{email.charAt(0).toUpperCase()}</span>
+                  <span className="text-white font-bold">{email ? email.charAt(0).toUpperCase() : ''}</span>
                 </div>
               </button>
               {dropdownOpen && (

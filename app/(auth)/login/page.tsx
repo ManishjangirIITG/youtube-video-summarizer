@@ -38,7 +38,7 @@ export default function LoginPage() {
         })
       } else if (session) {
         const expirationTime = new Date().getTime() + 24 * 60 * 60 * 1000 // 1 day in milliseconds
-        localStorage.setItem('access_token', session.accessToken)
+        localStorage.setItem('access_token', session.accessToken ?? '')
         localStorage.setItem('user_email', session.user.email ?? '')
         localStorage.setItem('session_expiration', expirationTime.toString())
         toast({
@@ -64,8 +64,8 @@ export default function LoginPage() {
         provider: 'github'
       })
 
-      console.log('GitHub Session:', session) // Debugging statement
-      console.log('GitHub Error:', error) // Debugging statement
+      // console.log('GitHub Session:', session) // Debugging statement
+      // console.log('GitHub Error:', error) // Debugging statement
 
       if (error) {
         console.log('first if in the github login tab')
@@ -101,12 +101,12 @@ export default function LoginPage() {
         provider: 'google'
       })
 
-      console.log('Google Session:', session) // Debugging statement
-      console.log('Google Error:', error) // Debugging statement
+      // console.log('Google Session:', session) // Debugging statement
+      // console.log('Google Error:', error) // Debugging statement
 
       if (error) {
-        console.log('first if in the google login')
-        console.log(error)
+        // console.log('first if in the google login')
+        // console.log(error)
         toast({
           title: "GitHub Login failed",
           description: error.message,
@@ -124,8 +124,8 @@ export default function LoginPage() {
         router.push('/dashboard')
       }
     } catch (error: any) {
-      console.log('catch in the google login')
-      console.log(error)
+      // console.log('catch in the google login')
+      // console.log(error)
       toast({
         title: "Error",
         description: error.message,
