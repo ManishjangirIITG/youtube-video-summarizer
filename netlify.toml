@@ -4,11 +4,12 @@
   environment = { NODE_VERSION = "18" }
 
 [[redirects]]
-  from = "/api/summarize"
+  from = "/api/*"
   to = "/.netlify/functions/summarize"
   status = 200
   force = true
 
 [functions]
+  directory="netlify/functions"
   external_node_modules = ["@netlify/functions"]
   node_bundler = "esbuild"

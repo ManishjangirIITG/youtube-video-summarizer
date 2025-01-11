@@ -1,6 +1,6 @@
 "use client"
 
-import { useState,useEffect } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -46,48 +46,77 @@ export default function DashboardPage() {
     setIsCached(false)
 
     try {
-      // Extract video ID from URL
       const videoId = extractVideoId(url)
       if (!videoId) {
         throw new Error("Invalid YouTube URL")
       }
-
-      // Call your API endpoint
-      const response = await fetch("/.netlify/functions/summarize", {
-        method: "POST",
+  
+      const response = await fetch('/.netlify/functions/summarize', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ videoId }),
-      })
-
-      const data = await response.json()
-
+        body: JSON.stringify({ 
+          videoUrl: `https://www.youtube.com/watch?v=${videoId}` 
+        })
+      });
+      
       if (!response.ok) {
-        throw new Error(data.error || "Failed to summarize video")
+        throw new Error(`Server error: ${response.status}`);
       }
-
-      // Set the summary in state
-      setSummary(data.summary)
-      setIsCached(data.fromCache)
-
+  
+      const data = await response.json();
+      if (data.summary) {
+        setSummary(data.summary);
+        toast({
+          title: "Success",
+          description: "Summary generated successfully",
+        });
+      }
+    } catch (error) {
+      console.error('Error:', error);
       toast({
-        title: data.fromCache ? "Retrieved from cache" : "Success",
-        description: data.fromCache 
-          ? "Summary retrieved from database" 
-          : "Video summarized successfully",
-      })
-
-    } catch (error: any) {
-      toast({
-        variant: "destructive",
         title: "Error",
-        description: error.message,
-      })
+        description: error instanceof Error ? error.message : 'Failed to generate summary',
+        variant: "destructive",
+      });
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+    // e.preventDefault();
+    // try {
+    //   const videoId = extractVideoId(url);
+    //   if (!videoId) {
+    //     throw new Error("Invalid YouTube URL");
+    //   }
+
+    //   const response = await fetch('/.netlify/functions/api', {
+    //     method: 'POST',
+    //     headers: { 'Content-Type': 'application/json' },
+    //     body: JSON.stringify({ 
+    //       videoUrl: `https://www.youtube.com/watch?v=${videoId}` 
+    //     })
+    //   });
+
+    //   if (!response.ok) {
+    //     const errorData = await response.json();
+    //     throw new Error(errorData.error || 'Failed to generate summary');
+    //   }
+
+    //   const data = await response.json();
+    //   if (data.summary) {
+    //     setTranscript(data.summary, setSummary);
+    //   }
+    // } catch (error) {
+    //   toast({
+    //     title: "Error",
+    //     description: error instanceof Error ? error.message : 'Something went wrong',
+    //     variant: "destructive",
+    //   });
+    // } finally {
+    //   setLoading(false);
+    // }
+  };
 
   return (
     <div className="container py-10">
@@ -145,4 +174,7 @@ function extractVideoId(url: string): string | null {
   const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/
   const match = url.match(regExp)
   return match && match[2].length === 11 ? match[2] : null
+}
+function setTranscript(summary: string, setSummary: React.Dispatch<React.SetStateAction<string | null>>) {
+  setSummary(summary);
 }

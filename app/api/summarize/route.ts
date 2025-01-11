@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { generateVideoSummary } from "@/lib/groq_liama"
+import axios from "axios";
 
 const PYTHON_SERVER_URL = process.env.PYTHON_SERVER_URL || 'http://localhost:5000'
 
@@ -7,22 +8,22 @@ async function getTranscriptFromPythonServer(videoUrl: string) {
   console.log('Starting transcript fetch for:', videoUrl);
 
   try {
-    const response = await fetch(`${PYTHON_SERVER_URL}/api/transcript`, {
+    const response = await axios(`${PYTHON_SERVER_URL}/api/transcript`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       },
-      body: JSON.stringify({ 
+      data: JSON.stringify({ 
         url: videoUrl.trim() 
       })
     });
 
     console.log('Python server response status:', response.status);
-    const data = await response.json();
+    const data = response.data;
     console.log('Python server response data:', data);
 
-    if (!response.ok) {
+    if (response.status < 200 || response.status >= 300) {
       throw new Error(data.error || `HTTP error! status: ${response.status}`);
     }
 
