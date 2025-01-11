@@ -39,7 +39,7 @@ export default function LoginPage() {
       } else if (session) {
         const expirationTime = new Date().getTime() + 24 * 60 * 60 * 1000 // 1 day in milliseconds
         localStorage.setItem('access_token', session.accessToken)
-        localStorage.setItem('user_email', session.user_email ?? '')
+        localStorage.setItem('user_email', session.user.email ?? '')
         localStorage.setItem('session_expiration', expirationTime.toString())
         toast({
           title: "Login successful",
