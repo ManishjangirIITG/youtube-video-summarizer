@@ -53,7 +53,7 @@ export default function DashboardPage() {
       }
 
       // Call your API endpoint
-      const response = await fetch("/api/summarize", {
+      const response = await fetch("/.netlify/functions/summarize", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

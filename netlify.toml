@@ -4,9 +4,10 @@
   environment = { NODE_VERSION = "18" }
 
 [[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/api/:splat"
+  from = "/api/summarize"
+  to = "/.netlify/functions/summarize"
   status = 200
+  force = true
 
 [functions]
   external_node_modules = ["@netlify/functions"]
